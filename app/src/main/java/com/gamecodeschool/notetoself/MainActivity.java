@@ -2,6 +2,7 @@ package com.gamecodeschool.notetoself;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -22,6 +23,10 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     private NoteAdapter mNoteAdapter;
+
+    private boolean mSound;
+    private int mAnimOption;
+    private SharedPreferences mPrefs;
     public void createNewNote(Note n){
         mNoteAdapter.addNote(n);
     }
@@ -112,5 +117,12 @@ public class MainActivity extends AppCompatActivity {
             noteList.add(n);
             notifyDataSetChanged();
         }
+    }
+
+    public void onResume(){
+        super.onResume();
+        mPrefs = getSharedPreferences("Note to self",MODE_PRIVATE);
+        mSound = mPrefs.getBoolean("sound",true);
+        mAnimOption = mPrefs.getInt("anim option",SettingsActivity.FAST);
     }
 }
