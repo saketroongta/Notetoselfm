@@ -72,7 +72,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public class NoteAdapter extends BaseAdapter{
+        private Note.JSONSerializer mSerializer;
         List<Note> noteList = new ArrayList<Note>();
+        
+        public NoteAdapter(){
+            mSerializer = new Note.JSONSerializer("NoteToSelf.json",MainActivity.this.getApplicationContext());
+            
+        }
 
         public int getCount(){
             return  noteList.size();
