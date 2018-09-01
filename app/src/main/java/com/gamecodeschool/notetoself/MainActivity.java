@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -77,7 +78,12 @@ public class MainActivity extends AppCompatActivity {
         
         public NoteAdapter(){
             mSerializer = new Note.JSONSerializer("NoteToSelf.json",MainActivity.this.getApplicationContext());
-            
+            try {
+                noteList = mSerializer.load();
+            }catch (Exception e){
+                noteList = new ArrayList<Note>();
+                Log.e("Error loading notes: ","",e);
+            }
         }
 
         public int getCount(){
@@ -123,6 +129,14 @@ public class MainActivity extends AppCompatActivity {
             noteList.add(n);
             notifyDataSetChanged();
         }
+
+        public void saveNotes(){
+            try {
+                mSerializer.save(noteList);
+            }catch (Exception e){
+                Log.e("Error Saving Notes","",e);
+            }
+        }
     }
 
     public void onResume(){
@@ -130,5 +144,10 @@ public class MainActivity extends AppCompatActivity {
         mPrefs = getSharedPreferences("Note to self",MODE_PRIVATE);
         mSound = mPrefs.getBoolean("sound",true);
         mAnimOption = mPrefs.getInt("anim option",SettingsActivity.FAST);
+    }
+
+    protected void onPause(){
+        super.onPause();
+        mNoteAdapter.saveNotes();
     }
 }
